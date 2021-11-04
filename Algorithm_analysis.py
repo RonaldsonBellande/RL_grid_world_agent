@@ -2,7 +2,7 @@ from header_import import *
 
 if __name__ == "__main__":
     
-    number_episode = 100000
+    number_episode = 10000
     grid_size = int(sys.argv[1])
 
     # Algorithums
@@ -26,14 +26,14 @@ if __name__ == "__main__":
     plot.plot_episode_time_step(reward_average, type_graph = "reward", type_graph_name="Q_Learning reward | alpha 1")
     plot.plot_episode_time_step(max_action, type_graph = "action", type_graph_name="Q Learning action | alpha 1")
     plot.plot_grid_world_with_wind_and_obstacle(q_value, type_graph = "optimal path", type_graph_name="Q_Learning reward | alpha 1")
-    plot.save_q_value(q_value, type_graph_name="Sarsa | 4 action")
+    plot.save_q_value(q_value, type_graph_name="Q_Learning reward | alpha 1")
 
 
     reward_average, max_action, q_value = regular.double_q_learning()
     plot.plot_episode_time_step(reward_average, type_graph = "reward", type_graph_name="Double Q_Learning reward | alpha 1")
     plot.plot_episode_time_step(max_action, type_graph = "action", type_graph_name="Double Q Learning action | alpha 1")
     plot.plot_grid_world_with_wind_and_obstacle(q_value, type_graph = "optimal path", type_graph_name="Double Q_Learning reward | alpha 1")
-    plot.save_q_value(q_value, type_graph_name="Sarsa | 4 action")
+    plot.save_q_value(q_value, type_graph_name="Double Q_Learning reward | alpha 1")
 
 
     regular = q_learning_algorithm(episode=number_episode, gamma=1, alpha=0.8, epsilon=0.1, max_time_step=10000, grid_world_size=grid_size)
@@ -44,12 +44,12 @@ if __name__ == "__main__":
     plot.plot_episode_time_step(reward_average, type_graph = "reward", type_graph_name="Q_Learning reward | alpha 0.8")
     plot.plot_episode_time_step(max_action, type_graph = "action", type_graph_name="Q Learning action | alpha 0.8")
     plot.plot_grid_world_with_wind_and_obstacle(q_value, type_graph = "optimal path", type_graph_name="Q_Learning reward | alpha 0.8")
-    plot.save_q_value(q_value, type_graph_name="Sarsa | 4 action")
+    plot.save_q_value(q_value, type_graph_name="Q_Learning reward | alpha 0.8")
 
 
     reward_average, max_action, q_value = regular.double_q_learning()
     plot.plot_episode_time_step(reward_average, type_graph = "reward", type_graph_name="Double Q_Learning reward | alpha 0.8")
     plot.plot_episode_time_step(max_action, type_graph = "action", type_graph_name="Double Q Learning action | alpha 0.8")
     plot.plot_grid_world_with_wind_and_obstacle(q_value, type_graph = "optimal path", type_graph_name="Double Q_Learning reward | alpha 0.8")
-    plot.save_q_value(q_value, type_graph_name="Sarsa | 4 action")
+    plot.save_q_value(q_value,  type_graph_name="Double Q_Learning reward | alpha 0.8")
 

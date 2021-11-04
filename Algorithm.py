@@ -93,7 +93,7 @@ class q_learning_algorithm(Grid_World_Enviroment_with_Wind_Obstacle):
                     break
                     
             actions[0], actions[1], actions[2], actions[3] = self.q_value[(0,0), 0], self.q_value[(0,0), 1], self.q_value[(0,0), 2], self.q_value[(0,0), 3]
-            self.max_action.append(np.max(actions) / np.sum(actions))
+            # self.max_action.append(np.max(actions) / np.sum(actions))
             reward_list /= count
             self.rewards.append(reward_list)
             self.reward_average.append(sum(self.rewards) / len(self.rewards))
@@ -129,13 +129,13 @@ class q_learning_algorithm(Grid_World_Enviroment_with_Wind_Obstacle):
                     break
                     
             actions[0], actions[1], actions[2], actions[3] = self.q_value_sum[(0,0), 0], self.q_value_sum[(0,0), 1], self.q_value_sum[(0,0), 2], self.q_value_sum[(0,0), 3]
-            self.max_action.append(np.max(actions) / np.sum(actions))
+            # self.max_action.append(np.max(actions) / np.sum(actions))
             reward_list /= count
             self.rewards.append(reward_list)
             self.reward_average.append(sum(self.rewards) / len(self.rewards))
         
         self.reward_average = self.reward_average[:-self.number_episode]
-        self.max_action = self.max_action[:-self.number_episode]
+        # self.max_action = self.max_action[:-self.number_episode]
 
         return self.reward_average,  self.max_action, self.q_value
 
