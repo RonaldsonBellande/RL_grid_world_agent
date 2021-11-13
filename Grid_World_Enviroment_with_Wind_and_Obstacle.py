@@ -2,13 +2,13 @@ from header_import import *
 
 
 class Grid_World_Enviroment_with_Wind_Obstacle(object):
-    def __init__(self, grid_world_size = 20):
+    def __init__(self, simulation, grid_world_size = 20):
         
         self.grid_world_size = grid_world_size
         self.action_space = [0, 1, 2, 3]
-            
+        self.simulation = simulation
+         
         if self.grid_world_size == 20:
-            
             self.start = (0, 0)
             self.goal = (19, 19)
             
@@ -17,7 +17,6 @@ class Grid_World_Enviroment_with_Wind_Obstacle(object):
             self.teleport_2 = [(19, 4), (0, 2)]
             
         elif self.grid_world_size == 50:
-            
             self.start = (0, 0)
             self.goal = (49, 49)
             
@@ -25,6 +24,9 @@ class Grid_World_Enviroment_with_Wind_Obstacle(object):
             self.teleport_1 = [(0, 41), (38, 19)]
             self.teleport_2 = [(47, 8), (0, 4)]
 
+        self.death = False
+        self.enemy_trajectory = [(37, 36), (37, 35), (37, 34), (37, 33), (36, 33), (35, 33), (34, 33), (34, 34), (34, 35), (34, 36), (35, 36), (36, 36), (37, 36)]
+        self.i = 0
 
         
     def action_type_space(self):
@@ -35,11 +37,18 @@ class Grid_World_Enviroment_with_Wind_Obstacle(object):
         return self.start
     
     def step(self, action):
-        self.x_position, self.y_position = self.transition(self.x_position, self.y_position, action)
+        self.x_position, self.y_position, reward = self.transition(self.x_position, self.y_position, action)
         
         if self.x_position == self.goal[0] and self.y_position == self.goal[1]:
-            return True, 1, (self.x_position, self.y_position)
-        return False, -1, (self.x_position, self.y_position)
+            return True, reward, (self.x_position, self.y_position)
+
+        if self.death == True:
+            return True, reward, (self.x_position, self.y_position)
+
+        if self.x_position == self.enemy_x and self.y_position == self.enemy_y:
+            return True, reward, (self.x_position, self.y_position)
+
+        return False, reward, (self.x_position, self.y_position)
         
         
     def wind_enviroment(self, x, y):
@@ -135,8 +144,6 @@ class Grid_World_Enviroment_with_Wind_Obstacle(object):
                     x -= 1
 
 
-
-        
         elif self.grid_world_size == 50:
             
 
@@ -428,7 +435,6 @@ class Grid_World_Enviroment_with_Wind_Obstacle(object):
                 return x, y, True
         
     
-    
     def teleport_enviroment(self, x, y):
         if self.grid_world_size == 20:
             # Teleport 1
@@ -453,9 +459,67 @@ class Grid_World_Enviroment_with_Wind_Obstacle(object):
                 y = self.teleport_2[1][1]
                 
         return x, y
+       
+
+
+    def death_traps(self, x, y):
         
+        if self.grid_world_size == 50:
+            
+            if x in range(13,17) and y == 5:
+                return x, y, True
         
+            elif x in range(30,34) and y == 28:
+                return x, y, True
+            
+            elif x in range(42,46) and y == 33:
+                return x, y, True
+            
+            elif x in range(2,6) and y == 49:
+                return x, y, True
+            
+            elif x in range(22,26) and y == 19:
+                return x, y, True
+        
+            elif x == 4 and y in range(24,28):
+                return x, y, True
+        
+            elif x == 17 and y in range(32,36):
+                return x, y, True
+            
+            elif x == 26 and y in range(4,8):
+                return x, y, True
+            
+            elif x == 37 and y in range(14,18):
+                return x, y, True
+
+            elif x == 47 and y in range(44,48):
+                return x, y, True
+            
+            else:
+                return x, y, False
+
+
+        else:
+            return x, y, False
+ 
+
+    # Enemy Trajectory
+    def enemy_enviroment(self):
+        
+        self.enemy_x = self.enemy_trajectory[self.i][0]
+        self.enemy_y =  self.enemy_trajectory[self.i][1]
+        self.i += 1
+    
+        if self.i == len(self.enemy_trajectory):
+            self.i = 0
+        
+        return self.enemy_x, self.enemy_y
+
+
     def transition(self, x, y, action):
+        
+        reward = -1 
         
         # Teleport Enviroment
         x, y = self.teleport_enviroment(x,y)
@@ -478,6 +542,11 @@ class Grid_World_Enviroment_with_Wind_Obstacle(object):
 
         # Obstacle Enviroment
         x_next, y_next, detect = self.obstacle_enviroment(x, y)
+        
+        # Dead Enviroment
+        x, y, death = self.death_traps(x, y)
+        self.death = death
+
 
         if detect == True:
             x = x_next
@@ -494,9 +563,20 @@ class Grid_World_Enviroment_with_Wind_Obstacle(object):
             elif action == 3:
                 y -= 1
 
-
-       
+         
         x = np.clip(x, 0, self.grid_world_size)
         y = np.clip(y, 0, self.grid_world_size)
-        
-        return x, y
+
+        if x == self.goal[0] and y == self.goal[1]:
+            reward = 1
+
+        if self.simulation == True: 
+            if self.death == True:
+                reward = -2
+                return self.start[0],self.start[1], reward
+
+            if x == self.enemy_x and y  == self.enemy_y:
+                reward = -2
+                return self.start[0],self.start[1], reward
+
+        return x, y, reward

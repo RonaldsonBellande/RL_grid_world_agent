@@ -2,8 +2,8 @@ from header_import import *
 
 
 class Agent_Enviroment(Grid_World_Enviroment_with_Wind_Obstacle):
-    def __init__(self, grid_world_size = 20):
-        super().__init__(grid_world_size)
+    def __init__(self, grid_world_size = 20, simulation = True):
+        super().__init__(simulation, grid_world_size)
         
         self.WIDTH = 500
         self.HEIGHT = 500
@@ -13,6 +13,8 @@ class Agent_Enviroment(Grid_World_Enviroment_with_Wind_Obstacle):
         self.goal_color = pg.Color(0, 100, 0)
         self.bad_color = pg.Color(100, 0, 0)
         self.bg_color = pg.Color(0, 0, 0)
+        self.enemy_agent_color = pg.Color(255, 100, 100)
+        self.death_color = pg.Color(255, 0, 0)
         self.line_color = pg.Color(128, 128, 128)
         self.agent_color = pg.Color(120,120,0)
         self.wind_color_strong = pg.Color(30,144,255)
@@ -20,6 +22,9 @@ class Agent_Enviroment(Grid_World_Enviroment_with_Wind_Obstacle):
         self.obstacle_color = pg.Color(255,255,255)
         self.teleport_1_color = pg.Color(10,10,120)
         self.teleport_2_color = pg.Color(100,120,40)
+        self.green = (0, 255, 0)
+        self.blue = (0, 0, 128)
+        
 
         pg.init() 
         self.screen = pg.display.set_mode((self.WIDTH+2, self.HEIGHT+2))
@@ -28,17 +33,20 @@ class Agent_Enviroment(Grid_World_Enviroment_with_Wind_Obstacle):
         self.bg = self.bg.convert()
         self.bg.fill(self.bg_color)
         self.screen.blit(self.bg, (0,0))
+
+        self.Font = pg.font.SysFont('timesnewroman',  20)
         self.clock = pg.time.Clock()
-
-
         
         self.grid_world_size = grid_world_size
-
+        
         if self.grid_world_size == 20:
             self.grid_world = 25
+            self.moving_object = 4
+            self.start_goal = 9
         elif self.grid_world_size == 50:
             self.grid_world = 10
-
+            self.moving_object = 1
+            self.start_goal = 3
 
 
     def show(self):
@@ -139,21 +147,21 @@ class Agent_Enviroment(Grid_World_Enviroment_with_Wind_Obstacle):
             
             # Starting Position
             if x == self.start[0]*self.grid_world and y == self.start[1]*self.grid_world:
-                pg.draw.rect(self.screen, self.start_color, (x+9,y+9,self.grid_world - 18, self.grid_world - 18))
+                pg.draw.rect(self.screen, self.start_color, (x+self.start_goal,y+self.start_goal,self.grid_world - (self.start_goal + self.start_goal), self.grid_world - (self.start_goal + self.start_goal)))
             
             # Goal Position
             if x == self.goal[0]*self.grid_world and y == self.goal[1]*self.grid_world:
-                pg.draw.rect(self.screen, self.goal_color, (x+9,y+9,self.grid_world - 18, self.grid_world - 18))
+                pg.draw.rect(self.screen, self.goal_color, (x+self.start_goal,y+self.start_goal,self.grid_world - (self.start_goal + self.start_goal), self.grid_world - (self.start_goal + self.start_goal)))
 
         elif self.grid_world_size == 50:
             
             # Starting Position
             if x == self.start[0]*self.grid_world and y == self.start[1]*self.grid_world:
-                pg.draw.rect(self.screen, self.start_color, (x+9,y+9,self.grid_world - 18, self.grid_world - 18))
+                pg.draw.rect(self.screen, self.start_color, (x+self.start_goal,y+self.start_goal,self.grid_world - (self.start_goal + self.start_goal), self.grid_world - (self.start_goal + self.start_goal)))
             
             # Goal Position
             if x == self.goal[0]*self.grid_world and y == self.goal[1]*self.grid_world:
-                pg.draw.rect(self.screen, self.goal_color, (x+9,y+9,self.grid_world - 18, self.grid_world - 18))
+                pg.draw.rect(self.screen, self.goal_color, (x+self.start_goal,y+self.start_goal,self.grid_world - (self.start_goal + self.start_goal), self.grid_world - (self.start_goal + self.start_goal)))
 
 
     def obstacle_draw(self,x,y):
@@ -325,13 +333,49 @@ class Agent_Enviroment(Grid_World_Enviroment_with_Wind_Obstacle):
             elif x == 17*self.grid_world and y  in range(30*self.grid_world,34*self.grid_world):
                 pg.draw.rect(self.screen, self.obstacle_color, (x,y ,self.grid_world, self.grid_world))
 
-    
+
+    def death_traps_draw(self, x, y):
+
+        if self.grid_world_size == 50:
+            
+            if x in range(13*self.grid_world,17*self.grid_world) and y == 5*self.grid_world:
+                pg.draw.rect(self.screen, self.death_color, (x,y ,self.grid_world, self.grid_world))
+        
+            elif x in range(30*self.grid_world,34*self.grid_world) and y == 28*self.grid_world:
+                pg.draw.rect(self.screen, self.death_color, (x,y ,self.grid_world, self.grid_world))
+            
+            elif x in range(42*self.grid_world,46*self.grid_world) and y == 33*self.grid_world:
+                pg.draw.rect(self.screen, self.death_color, (x,y ,self.grid_world, self.grid_world))
+            
+            elif x in range(2*self.grid_world,6*self.grid_world) and y == 49*self.grid_world:
+                pg.draw.rect(self.screen, self.death_color, (x,y ,self.grid_world, self.grid_world))
+            
+            elif x in range(22*self.grid_world,26*self.grid_world) and y == 19*self.grid_world:
+                pg.draw.rect(self.screen, self.death_color, (x,y ,self.grid_world, self.grid_world))
+        
+            elif x == 4*self.grid_world and y in range(24*self.grid_world,28*self.grid_world):
+                pg.draw.rect(self.screen, self.death_color, (x,y ,self.grid_world, self.grid_world))
+        
+            elif x == 17*self.grid_world and y in range(32*self.grid_world,36*self.grid_world):
+                pg.draw.rect(self.screen, self.death_color, (x,y ,self.grid_world, self.grid_world))
+            
+            elif x == 26*self.grid_world and y in range(4*self.grid_world,8*self.grid_world):
+                pg.draw.rect(self.screen, self.death_color, (x,y ,self.grid_world, self.grid_world))
+            
+            elif x == 37*self.grid_world and y in range(14*self.grid_world,18*self.grid_world):
+                pg.draw.rect(self.screen, self.death_color, (x,y ,self.grid_world, self.grid_world))
+
+            elif x == 47*self.grid_world and y in range(44*self.grid_world,48*self.grid_world):
+                pg.draw.rect(self.screen, self.death_color, (x,y ,self.grid_world, self.grid_world))
+               
+
     def show_enviroment(self, x, y):
         
         self.wind_enviroment_draw(x,y)
         self.teleport_draw(x,y)
         self.obstacle_draw(x,y)
         self.starting_goal_position_draw(x,y)
+        self.death_traps_draw(x,y)
 
     
     def play_optimal_path(self):
@@ -339,7 +383,12 @@ class Agent_Enviroment(Grid_World_Enviroment_with_Wind_Obstacle):
 
 
     def move(self, x, y):
-        pg.draw.rect(self.screen, self.agent_color,  (x*self.grid_world +4, y*self.grid_world +4,self.grid_world - 8, self.grid_world - 8))
+        pg.draw.rect(self.screen, self.agent_color,  (x*self.grid_world +self.moving_object, y*self.grid_world +self.moving_object,self.grid_world -(self.moving_object + self.moving_object), self.grid_world - (self.moving_object + self.moving_object)))
+        self.show()
+
+
+    def enemy_move(self, x, y):
+        pg.draw.rect(self.screen, self.enemy_agent_color, (x*self.grid_world +self.moving_object, y*self.grid_world +self.moving_object,self.grid_world -(self.moving_object + self.moving_object), self.grid_world - (self.moving_object + self.moving_object)))
         self.show()
 
 
@@ -351,34 +400,41 @@ class Agent_Enviroment(Grid_World_Enviroment_with_Wind_Obstacle):
         self.move(x,y)
         pg.display.flip()
         run = True
+        reward = -1
         while run:
             self.clock.tick(60)
             for event in pg.event.get():
+                enemy_x, enemy_y = self.enemy_enviroment()
+
                 if event.type == pg.QUIT:
                     run = False
-            
                 # Action 0
                 elif event.type == pg.KEYDOWN and event.key == pg.K_LEFT:
                     action = 0
-                    x,y = self.transition(x, y, action)
+                    x,y, reward = self.transition(x, y, action)
                 # Action 1
                 elif event.type == pg.KEYDOWN and event.key == pg.K_UP:
                     action = 1
-                    x,y = self.transition(x, y, action)
+                    x,y, reward = self.transition(x, y, action)
                 # Action 2
                 elif event.type == pg.KEYDOWN and event.key == pg.K_RIGHT:
                     action = 2
-                    x,y = self.transition(x, y, action)
+                    x,y, reward = self.transition(x, y, action)
                 # Action 3
                 elif event.type == pg.KEYDOWN and event.key == pg.K_DOWN:
                     action = 3
-                    x,y = self.transition(x, y, action)
+                    x, y, reward = self.transition(x, y, action)
+                
+            
+            text = self.Font.render("Reward: "+str(reward), True, self.green)
 
             self.screen.blit(self.bg, (0,0))
             self.move(x,y)
-
+            self.enemy_move(enemy_x, enemy_y)
             self.show()
             pg.display.flip()
+
+            self.screen.blit(text, (230,480))
             pg.display.update()
         pg.quit()
 
