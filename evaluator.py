@@ -65,7 +65,7 @@ class grid_evaluate(Grid_World_Enviroment_with_Wind_Obstacle):
             axis.set_title(str(self.grid_world_size)+"Number of Test vs Total Reward Value")
             axis.set_xlabel("Number of Tests")
             axis.set_ylabel("Total Reward Values")
-        plt.savefig((str(self.chart_path) + str(self.grid_world_size) + "cumulative_reward" + "_" + ".png"), dpi =500)
+        plt.savefig((str(self.chart_path) + str(self.grid_world_size) + "_" + self.graph_data_name + "cumulative_reward" + "_" + ".png"), dpi =500)
 
 
     def calculate_std_error(self, data):
@@ -91,8 +91,15 @@ class grid_evaluate(Grid_World_Enviroment_with_Wind_Obstacle):
 if __name__ == "__main__":
     
     grid_size = int(sys.argv[1])
-    data_name = "Q_Learning_alpha_0.8"
+    algorithm  = (sys.argv[2])
     cumulative_reward = []
+    
+    if algorithm == "sarsa":
+        data_name = "Sarsa_alpha_0.8"
+    elif algorithm == "q_learning": 
+        data_name = "Q_Learning_alpha_0.8"
+    elif algorithm == "double_q_learning":
+        data_name = "Double_Q_Learning_alpha_0.8"
 
     Grid_world_Eval = grid_evaluate(grid_world_size = grid_size, graph_data_name = data_name)
     for i in range(100):

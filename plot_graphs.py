@@ -94,7 +94,7 @@ class plot_graphs(Grid_World_Enviroment_with_Wind_Obstacle):
         a_file.close() 
 
 
-    def plot_episode_time_step(self, data,  type_graph = "reward"):
+    def plot_episode_time_step(self, data, algorithm, type_graph = "reward"):
 
         fig = plt.figure()
         axis = fig.add_subplot(111)
@@ -114,7 +114,7 @@ class plot_graphs(Grid_World_Enviroment_with_Wind_Obstacle):
             axis.set_title(str(self.grid_world_size) +"Number of steps per episode vs. number of episodes")
             axis.set_xlabel("Number of Steps")
             axis.set_ylabel("Episodes")
-        plt.savefig((str(self.chart_path) + str(self.grid_world_size) + "_" + type_graph + ".png"), dpi =500)
+        plt.savefig((str(self.chart_path) + str(self.grid_world_size) + "_" + type_graph + "_" + algorithm + ".png"), dpi =500)
 
 
 
