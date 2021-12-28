@@ -48,16 +48,12 @@ class sarsa_algorithm(Grid_World_Enviroment_with_Wind_Obstacle):
                 for i in range(self.grid_world_size):
                     for ii in range(self.grid_world_size):
                         state = self.reset(start=(i,ii))
-                        count = 0
-                        reward_list = 0
                         action = self.policy(state)
                         while True:
                             done, reward, next_state = self.step(action)
                             next_action = self.policy(next_state)
                             self.q_value[state, action] = self.q_value[state, action] + self.alpha * (reward + self.gamma * self.q_value[next_state, next_action] - self.q_value[state, action])
                             state, action = next_state, next_action
-                            reward_list += reward
-                            count += 1
                             if i == 17 and ii == 12:
                                 break
 
@@ -222,7 +218,7 @@ class q_learning_algorithm(Grid_World_Enviroment_with_Wind_Obstacle):
                                 break
 
                         self.q_value_sum[state, action] = self.q_value[state, action] + self.q_value_2[state, action]
-                return self.q_value_sum
+            return self.q_value_sum
                     
                 
 

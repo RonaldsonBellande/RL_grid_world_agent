@@ -13,7 +13,7 @@ if __name__ == "__main__":
         plot.plot_episode_time_step(cumulative_reward, algorithm="sarsa" ,type_graph = "cumulative_reward")
         plot.plot_episode_time_step(step_number, algorithm="sarsa", type_graph = "step_number")
     
-        regular = sarsa_algorithm(episode=50, gamma=1, alpha=0.8, epsilon=0.1, max_time_step=50, grid_world_size=grid_size)
+        regular = sarsa_algorithm(episode=500, gamma=1, alpha=0.8, epsilon=0.1, max_time_step=500, grid_world_size=grid_size)
         q_value = regular.sarsa(state="all")
         plot.plot_grid_world_with_wind_and_obstacle(q_value, type_graph = "optimal path", type_graph_name="Sarsa reward | alpha 0.8")
         plot.save_q_value(q_value, type_graph_name="Sarsa_alpha_0.8")
@@ -35,7 +35,7 @@ if __name__ == "__main__":
         plot.plot_episode_time_step(cumulative_reward, algorithm="double_q_learning" ,type_graph = "cumulative_reward")
         plot.plot_episode_time_step(step_number, algorithm="double_q_learning", type_graph = "step_number")
     
-        regular = q_learning_algorithm(episode=50, gamma=1, alpha=0.8, epsilon=0.1, max_time_step=50, grid_world_size=grid_size)
+        regular = q_learning_algorithm(episode=200, gamma=1, alpha=0.8, epsilon=0.1, max_time_step=200, grid_world_size=grid_size)
         q_value = regular.double_q_learning(state="all")
         plot.plot_grid_world_with_wind_and_obstacle(q_value, type_graph = "optimal path", type_graph_name="Double_Q_Learning reward | alpha 0.8")
         plot.save_q_value(q_value, type_graph_name="Double_Q_Learning_alpha_0.8")
