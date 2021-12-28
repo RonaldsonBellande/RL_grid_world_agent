@@ -15,7 +15,7 @@ if __name__ == "__main__":
     
         regular = sarsa_algorithm(episode=50, gamma=1, alpha=0.8, epsilon=0.1, max_time_step=50, grid_world_size=grid_size)
         q_value = regular.sarsa(state="all")
-        plot.plot_grid_world_with_wind_and_obstacle(q_value, type_graph = "optimal path", type_graph_name="Q_Learning reward | alpha 0.8")
+        plot.plot_grid_world_with_wind_and_obstacle(q_value, type_graph = "optimal path", type_graph_name="Sarsa reward | alpha 0.8")
         plot.save_q_value(q_value, type_graph_name="Sarsa_alpha_0.8")
 
     elif algorithm == "q_learning": 
@@ -37,5 +37,5 @@ if __name__ == "__main__":
     
         regular = q_learning_algorithm(episode=50, gamma=1, alpha=0.8, epsilon=0.1, max_time_step=50, grid_world_size=grid_size)
         q_value = regular.double_q_learning(state="all")
-        plot.plot_grid_world_with_wind_and_obstacle(q_value, type_graph = "optimal path", type_graph_name="Q_Learning reward | alpha 0.8")
+        plot.plot_grid_world_with_wind_and_obstacle(q_value, type_graph = "optimal path", type_graph_name="Double_Q_Learning reward | alpha 0.8")
         plot.save_q_value(q_value, type_graph_name="Double_Q_Learning_alpha_0.8")

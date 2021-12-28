@@ -183,11 +183,10 @@ class q_learning_algorithm(Grid_World_Enviroment_with_Wind_Obstacle):
                         self.q_value[state, action] = self.q_value[state, action] + self.alpha * (reward + self.gamma * self.q_value_2[next_state, next_best_action1] - self.q_value[state, action])
                     else:
                         next_best_action2 = self.argmax_rand([self.q_value_2[next_state, a] for a in self.action_space])
-                        self.q_value_2[state, action] = self.q_value_2[state, action] + self.alpha * (reward + self.gamma * self.q_value_2[next_state, next_best_action2]  - self.q_value_2[state, action])
+                        self.q_value_2[state, action] = self.q_value_2[state, action] + self.alpha * (reward + self.gamma * self.q_value[next_state, next_best_action2]  - self.q_value_2[state, action])
                 
                     self.q_value_sum[state, action] = self.q_value[state, action] + self.q_value_2[state, action]
                     action =  self.argmax_rand([self.q_value_sum[next_state, a] for a in self.action_space])
-
                     reward_list += reward
                     state = next_state
                     count += 1
@@ -211,7 +210,7 @@ class q_learning_algorithm(Grid_World_Enviroment_with_Wind_Obstacle):
                                 self.q_value[state, action] = self.q_value[state, action] + self.alpha * (reward + self.gamma * self.q_value_2[next_state, next_best_action1] - self.q_value[state, action])
                             else:
                                 next_best_action2 = self.argmax_rand([self.q_value_2[next_state, a] for a in self.action_space])
-                                self.q_value_2[state, action] = self.q_value_2[state, action] + self.alpha * (reward + self.gamma * self.q_value_2[next_state, next_best_action2]  - self.q_value_2[state, action])
+                                self.q_value_2[state, action] = self.q_value_2[state, action] + self.alpha * (reward + self.gamma * self.q_value[next_state, next_best_action2]  - self.q_value_2[state, action])
                 
                             self.q_value_sum[state, action] = self.q_value[state, action] + self.q_value_2[state, action]
                             action =  self.argmax_rand([self.q_value_sum[next_state, a] for a in self.action_space])
